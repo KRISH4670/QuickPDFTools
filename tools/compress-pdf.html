@@ -116,35 +116,56 @@ compress.onclick=async()=>{
     const target=Number(compressionLevel.value);
     const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer(),{updateMetadata:false});
 
-    // Higher requested reduction means more metadata cleanup. The browser-only
-    // pdf-lib implementation cannot guarantee an exact percentage.
-    if(target>=20){
-      doc.setTitle('');
-      doc.setAuthor('');
-      doc.setSubject('');
-      doc.setKeywords([]);
-      doc.setProducer('');
-      doc.setCreator('');
-    }
+   // Compression strength controls how aggressively the PDF is optimized.
+// Exact percentage reduction cannot be guaranteed because pdf-lib does
+// not recompress embedded images.
 
-    const bytes=await doc.save({
-      useObjectStreams:true,
-      addDefaultPage:false
-    });
+if (target >= 20) {
+  doc.setTitle('');
+  doc.setAuthor('');
+  doc.setSubject('');
+  doc.setKeywords([]);
+  doc.setProducer('');
+  doc.setCreator('');
+}
 
-    const pct=((1-bytes.length/file.size)*100);
-    const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
-    const a=document.createElement('a');
-    a.href=url;
-    a.download='optimized-'+file.name;
-    a.click();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
+const bytes = await doc.save({
+  useObjectStreams: target >= 20,
+  addDefaultPage: false
+});
 
-    if(pct>0){
-      status.textContent='Done — '+fmt(file.size)+' → '+fmt(bytes.length)+' ('+pct.toFixed(1)+'% smaller). Requested reduction: '+target+'%.';
-    }else{
-      status.textContent='Done — output size is '+fmt(bytes.length)+'. The PDF may already be optimized. Requested reduction: '+target+'%.';
-    }
+const pct = ((1 - bytes.length / file.size) * 100);
+
+const url = URL.createObjectURL(
+  new Blob([bytes], { type: 'application/pdf' })
+);
+
+const a = document.createElement('a');
+a.href = url;
+a.download = 'optimized-' + file.name;
+a.click();
+
+setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+if (pct > 0) {
+  status.textContent =
+    'Done — ' +
+    fmt(file.size) +
+    ' → ' +
+    fmt(bytes.length) +
+    ' (' +
+    pct.toFixed(1) +
+    '% smaller). Compression strength: ' +
+    target +
+    '%.';
+} else {
+  status.textContent =
+    'Done — output size is ' +
+    fmt(bytes.length) +
+    '. This PDF may already be optimized. Compression strength: ' +
+    target +
+    '%.';
+}
   }catch(e){
     console.error(e);
     status.textContent='Could not process this PDF. Please check that it is valid.';
