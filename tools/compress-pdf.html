@@ -1,5 +1,11 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Compress PDF files in your browser with QuickPDFTools.">
-    <link rel="canonical" href="https://YOUR-DOMAIN.example/tools/compress-pdf.html">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Reduce PDF file size with a browser-based structural optimization tool. Results vary by PDF.">
+    <link rel="canonical" href="https://krish4670.github.io/QuickPDFTools/tools/compress-pdf.html">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563eb">
+<meta property="og:title" content="Compress PDF Online — QuickPDFTools">
+<meta property="og:description" content="Reduce PDF file size with a browser-based structural optimization tool. Results vary by PDF.">
+<meta property="og:url" content="https://krish4670.github.io/QuickPDFTools/tools/compress-pdf.html">
+<meta property="og:type" content="website">
 <title>Compress PDF Online — QuickPDFTools</title><link rel="stylesheet" href="../css/style.css"><style>.tool-wrap{max-width:850px;margin:auto}.drop{border:2px dashed #93c5fd;background:#f8fbff;border-radius:18px;padding:42px 20px;text-align:center;cursor:pointer}.drop.drag{background:#eff6ff;border-color:#2563eb}.panel{margin-top:20px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}.file-info{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.actions{text-align:center;margin-top:20px}.status{text-align:center;min-height:24px;margin-top:15px;color:#667085}.note{margin-top:30px;padding:20px;background:#f8fafc;border-radius:14px;color:#667085;font-size:13px;line-height:1.6}</style></head><body>
 <header class="site-header">
   <div class="container nav-wrap">
@@ -39,10 +45,10 @@
           <main class="section"><div class="container tool-wrap"><div class="eyebrow">PDF TOOL</div><h1>Compress PDF</h1><p>Optimize a PDF directly in your browser. No server upload is used by this tool.</p><div class="drop" id="drop"><h3>Drop a PDF here</h3><p>or click to choose a PDF file</p><button class="btn primary" type="button">Choose PDF</button><input id="file" type="file" accept="application/pdf" hidden></div><div id="panel" class="panel" hidden><div class="file-info"><div><strong id="filename"></strong><br><small id="size"></small></div><button id="remove" class="btn secondary">Change PDF</button></div><div class="actions">
 <div class="compress-control" style="margin:18px 0;padding:16px;background:#f8fafc;border:1px solid #e4e7ec;border-radius:14px;">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px;">
-    <label for="compressionLevel" style="font-weight:750;font-size:14px;">Target size reduction</label>
+    <label for="compressionLevel" style="font-weight:750;font-size:14px;">Compression target (best effort)</label>
     <strong id="compressionValue" style="color:#2563eb;font-size:14px;">30%</strong>
   </div>
-  <input id="compressionLevel" type="range" min="0" max="80" step="5" value="30" style="width:100%;">
+  <input id="compressionLevel" type="range" min="0" max="80" step="5" value="40" style="width:100%;">
   <div style="display:flex;justify-content:space-between;color:#667085;font-size:12px;margin-top:5px;">
     <span>0% · Light</span><span>40% · Balanced</span><span>80% · Strong</span>
   </div>
@@ -51,7 +57,7 @@
   </p>
 </div>
 
-<button id="compress" class="btn primary">Optimize & Download</button></div></div><div id="status" class="status"></div><div class="note"><strong>Important:</strong> This V1 performs safe structural optimization. PDFs with large embedded images may not become substantially smaller; stronger image recompression is planned for a later version. Your selected file stays in your browser.</div></div></main><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script><script>
+<button id="compress" class="btn primary">Optimize & Download</button></div></div><div id="status" class="status"></div><div class="note"><strong>Important:</strong> The target controls image quality and render scale. Exact percentage reduction cannot be guaranteed because every PDF is different. Strong compression rasterizes pages, so selectable text and some vector features may be lost. Your selected file stays in your browser.</div></div></main><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>
 const input=document.getElementById('file'),
 drop=document.getElementById('drop'),
 panel=document.getElementById('panel'),
@@ -110,69 +116,85 @@ compress.onclick=async()=>{
   if(!file)return;
 
   compress.disabled=true;
-  status.textContent='Optimizing PDF…';
+  status.textContent='Compressing PDF…';
 
   try{
     const target=Number(compressionLevel.value);
-    const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer(),{updateMetadata:false});
 
-   // Compression strength controls how aggressively the PDF is optimized.
-// Exact percentage reduction cannot be guaranteed because pdf-lib does
-// not recompress embedded images.
+    // 0–15%: structural optimization only.
+    if(target < 20){
+      const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer(),{updateMetadata:false});
+      const bytes=await doc.save({useObjectStreams:true,addDefaultPage:false});
+      download(bytes,'optimized-'+file.name);
+      showResult(file.size,bytes.length,target,false);
+      return;
+    }
 
-if (target >= 20) {
-  doc.setTitle('');
-  doc.setAuthor('');
-  doc.setSubject('');
-  doc.setKeywords([]);
-  doc.setProducer('');
-  doc.setCreator('');
-}
+    // 20–80%: render each page to JPEG and rebuild the PDF.
+    // Higher target => lower JPEG quality and render scale.
+    const settings={
+      20:{scale:1.65,quality:0.82},
+      30:{scale:1.50,quality:0.76},
+      40:{scale:1.35,quality:0.68},
+      50:{scale:1.20,quality:0.60},
+      60:{scale:1.08,quality:0.52},
+      70:{scale:0.96,quality:0.44},
+      80:{scale:0.86,quality:0.36}
+    };
+    const cfg=settings[target] || settings[40];
 
-const bytes = await doc.save({
-  useObjectStreams: target >= 20,
-  addDefaultPage: false
-});
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+    const out=await PDFLib.PDFDocument.create();
 
-const pct = ((1 - bytes.length / file.size) * 100);
+    for(let i=1;i<=pdf.numPages;i++){
+      status.textContent=`Compressing page ${i} of ${pdf.numPages}…`;
+      const page=await pdf.getPage(i);
+      const base=page.getViewport({scale:1});
+      const viewport=page.getViewport({scale:cfg.scale});
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(viewport.width));
+      canvas.height=Math.max(1,Math.round(viewport.height));
+      const ctx=canvas.getContext('2d',{alpha:false});
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      await page.render({canvasContext:ctx,viewport}).promise;
 
-const url = URL.createObjectURL(
-  new Blob([bytes], { type: 'application/pdf' })
-);
+      const dataUrl=canvas.toDataURL('image/jpeg',cfg.quality);
+      const jpg=await out.embedJpg(dataUrl);
+      const outPage=out.addPage([base.width,base.height]);
+      outPage.drawImage(jpg,{x:0,y:0,width:base.width,height:base.height});
+    }
 
-const a = document.createElement('a');
-a.href = url;
-a.download = 'optimized-' + file.name;
-a.click();
-
-setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-if (pct > 0) {
-  status.textContent =
-    'Done — ' +
-    fmt(file.size) +
-    ' → ' +
-    fmt(bytes.length) +
-    ' (' +
-    pct.toFixed(1) +
-    '% smaller). Compression strength: ' +
-    target +
-    '%.';
-} else {
-  status.textContent =
-    'Done — output size is ' +
-    fmt(bytes.length) +
-    '. This PDF may already be optimized. Compression strength: ' +
-    target +
-    '%.';
-}
+    const bytes=await out.save({useObjectStreams:true,addDefaultPage:false});
+    download(bytes,'compressed-'+file.name);
+    showResult(file.size,bytes.length,target,true);
   }catch(e){
     console.error(e);
-    status.textContent='Could not process this PDF. Please check that it is valid.';
+    status.textContent='Could not compress this PDF. Please check that it is valid and try again.';
   }finally{
     compress.disabled=false;
   }
 };
+
+function download(bytes,name){
+  const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function showResult(original,output,target,rasterized){
+  const pct=((1-output/original)*100);
+  const actual=pct.toFixed(1);
+  if(pct>0){
+    status.textContent=`Done — ${fmt(original)} → ${fmt(output)} (${actual}% smaller). Target: ${target}%.${rasterized?' Stronger compression rasterized the pages.':''}`;
+  }else{
+    status.textContent=`Done — output is ${fmt(output)}. The PDF could not reach the ${target}% target; actual reduction was ${actual}%.${rasterized?' Try a stronger target if you need a smaller file.':''}`;
+  }
+}
 </script>
           <div class="tool-privacy">Your files are processed by the tool according to its implementation. Where a tool works entirely in your browser, files do not need to be uploaded to a server.</div>
         </div>
