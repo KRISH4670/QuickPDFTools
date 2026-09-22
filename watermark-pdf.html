@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Add a text watermark to PDF pages online for free. Customize position, size, opacity and rotation with QuickPDFTools.">
+<link rel="canonical" href="watermark-pdf.html">
+<title>Watermark PDF Online — QuickPDFTools</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.tool-wrap{max-width:900px;margin:auto}.drop{border:2px dashed #93c5fd;background:#f8fbff;border-radius:18px;padding:42px 20px;text-align:center;cursor:pointer}.drop.drag{background:#eff6ff;border-color:#2563eb}.panel{margin-top:20px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}.topbar,.actions{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.settings{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}.field label{display:block;font-size:12px;font-weight:700;color:#667085;margin-bottom:7px}.field input,.field select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:8px;background:#fff}.check{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:14px}.preview{margin-top:20px;border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:#f8fafc}.preview h3{margin:0 0 10px}.sheet{position:relative;width:min(100%,520px);aspect-ratio:1/1.414;background:#fff;border:1px solid #ddd;margin:auto;overflow:hidden}.wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-35deg);font-weight:700;white-space:nowrap;color:#111;opacity:.2;font-size:30px}.actions{justify-content:center;margin-top:22px}.status{text-align:center;min-height:24px;margin-top:15px;color:#667085}.note{margin-top:22px;padding:18px;background:#f8fafc;border-radius:12px;color:#667085;font-size:13px;line-height:1.6}@media(max-width:650px){.settings{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="../index.html" aria-label="QuickPDFTools home">
+      <span class="brand-mark">Q</span>
+      <span>Quick<span>PDF</span>Tools</span>
+    </a>
+    <button class="menu-toggle" data-menu-toggle aria-label="Open menu">☰</button>
+    <nav class="nav" data-mobile-menu>
+      <a href="../index.html#tools">All Tools</a>
+      <a href="../index.html#how-it-works">How It Works</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tool-page">
+  <section class="tool-hero">
+    <div class="container">
+      <div class="tool-breadcrumb"><a href="../index.html">Home</a> <span>›</span> <span>Watermark PDF Online</span></div>
+      <div class="tool-heading">
+        <div class="eyebrow">PDF TOOL</div>
+        <h1>Watermark PDF Online</h1>
+        <p>Use this simple PDF tool online. Upload your file, choose your options, and download the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-workspace">
+    <div class="container">
+      <div class="tool-shell">
+        <div class="tool-shell-header">
+          <span class="tool-shell-title">Use Watermark PDF Online</span>
+          <span class="tool-shell-note">Simple • No signup</span>
+        </div>
+        <div class="tool-shell-body">
+          
+
+<main class="section"><div class="container tool-wrap">
+<div class="eyebrow">PDF UTILITY</div>
+<h1>Watermark PDF</h1>
+<p>Add a custom text watermark to every page or selected pages of your PDF.</p>
+<div class="drop" id="drop"><h3>Drop a PDF here</h3><p>or click to choose a PDF file</p><button class="btn primary" type="button">Choose PDF</button><input id="input" type="file" accept="application/pdf" hidden></div>
+<div id="panel" class="panel" hidden>
+<div class="topbar"><div><strong id="name"></strong><br><small id="info"></small></div><button id="change" class="btn secondary">Change PDF</button></div>
+<div class="settings">
+<div class="field"><label for="text">WATERMARK TEXT</label><input id="text" maxlength="80" value="CONFIDENTIAL" placeholder="e.g. CONFIDENTIAL"></div>
+<div class="field"><label for="position">POSITION</label><select id="position"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="tl">Top left</option><option value="tr">Top right</option><option value="bl">Bottom left</option><option value="br">Bottom right</option></select></div>
+<div class="field"><label for="size">FONT SIZE</label><input id="size" type="number" min="8" max="120" value="36"></div>
+<div class="field"><label for="opacity">OPACITY <span id="opacityValue">20%</span></label><input id="opacity" type="range" min="5" max="80" value="20"></div>
+<div class="field"><label for="rotation">ROTATION</label><select id="rotation"><option value="-45">-45°</option><option value="0">0°</option><option value="45">45°</option><option value="90">90°</option></select></div>
+</div>
+<label class="check"><input id="allPages" type="checkbox" checked> Apply watermark to all pages</label>
+<div class="preview"><h3>Preview</h3><div class="sheet"><div id="wm" class="wm">CONFIDENTIAL</div></div></div>
+<div class="actions"><button id="watermark" class="btn primary">Add Watermark & Download</button><button id="reset" class="btn secondary">Clear</button></div>
+<div id="status" class="status"></div>
+</div>
+<div class="note"><strong>Privacy:</strong> Your PDF is processed in your browser and is not uploaded to a QuickPDFTools server.</div>
+</div></main>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const input=document.getElementById('input'),drop=document.getElementById('drop'),panel=document.getElementById('panel'),status=document.getElementById('status'),wm=document.getElementById('wm');
+let source=null;
+drop.onclick=e=>{if(e.target.tagName!=='BUTTON')input.click()};drop.querySelector('button').onclick=()=>input.click();
+['dragenter','dragover'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.add('drag')}));
+['dragleave','drop'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.remove('drag')}));
+input.onchange=()=>load(input.files[0]);drop.addEventListener('drop',e=>load(e.dataTransfer.files[0]));
+async function load(file){if(!file||file.type!=='application/pdf'){status.textContent='Please select a PDF file.';return}try{status.textContent='Loading…';source=await PDFLib.PDFDocument.load(await file.arrayBuffer());document.getElementById('name').textContent=file.name;document.getElementById('info').textContent=source.getPageCount()+' page'+(source.getPageCount()===1?'':'s');panel.hidden=false;updatePreview();status.textContent=''}catch(e){console.error(e);status.textContent='Could not open this PDF.'}}
+function updatePreview(){wm.textContent=document.getElementById('text').value||'CONFIDENTIAL';wm.style.fontSize=Math.min(Number(document.getElementById('size').value),70)+'px';wm.style.opacity=Number(document.getElementById('opacity').value)/100;wm.style.transform='translate(-50%,-50%) rotate('+document.getElementById('rotation').value+'deg)';const pos=document.getElementById('position').value;wm.style.left=pos.includes('l')?'20%':pos.includes('r')?'80%':'50%';wm.style.top=pos==='top'||pos==='tl'||pos==='tr'?'15%':pos==='bottom'||pos==='bl'||pos==='br'?'85%':'50%';}
+['text','size','opacity','rotation','position'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(id==='opacity')document.getElementById('opacityValue').textContent=document.getElementById('opacity').value+'%';updatePreview()}));
+document.getElementById('change').onclick=reset;document.getElementById('reset').onclick=reset;
+function reset(){source=null;input.value='';panel.hidden=true;status.textContent=''}
+document.getElementById('watermark').onclick=async()=>{if(!source)return;const text=document.getElementById('text').value.trim();if(!text){status.textContent='Enter watermark text.';return}const btn=document.getElementById('watermark');btn.disabled=true;status.textContent='Adding watermark…';try{const pages=source.getPages(),pos=document.getElementById('position').value,size=Number(document.getElementById('size').value),opacity=Number(document.getElementById('opacity').value)/100,angle=Number(document.getElementById('rotation').value);for(const page of pages){let x=page.getWidth()/2,y=page.getHeight()/2;if(pos==='top'){y=page.getHeight()-size*1.5}else if(pos==='bottom'){y=size*1.5}else if(pos==='tl'){x=size*2;y=page.getHeight()-size*1.5}else if(pos==='tr'){x=page.getWidth()-size*2;y=page.getHeight()-size*1.5}else if(pos==='bl'){x=size*2;y=size*1.5}else if(pos==='br'){x=page.getWidth()-size*2;y=size*1.5}page.drawText(text,{x,y,size,color:PDFLib.rgb(0.35,0.35,0.35),opacity,rotate:PDFLib.degrees(angle),xSkew:PDFLib.degrees(0),ySkew:PDFLib.degrees(0),font:await source.embedFont(PDFLib.StandardFonts.HelveticaBold),maxWidth:page.getWidth()-size*3})}const bytes=await source.save();const blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='watermarked.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Done — watermarked.pdf downloaded.'}catch(e){console.error(e);status.textContent='Could not add the watermark.'}finally{btn.disabled=false}};
+</script>
+
+          <div class="tool-privacy">Your files are processed by the tool according to its implementation. Where a tool works entirely in your browser, files do not need to be uploaded to a server.</div>
+        </div>
+      </div>
+
+      <div class="tool-help">
+        <div class="tool-help-card"><strong>1. Upload</strong><span>Select or drag your PDF/image into the tool.</span></div>
+        <div class="tool-help-card"><strong>2. Adjust</strong><span>Choose the options you need.</span></div>
+        <div class="tool-help-card"><strong>3. Download</strong><span>Save your finished file.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <a class="brand footer-brand" href="../index.html"><span class="brand-mark">Q</span><span>Quick<span>PDF</span>Tools</span></a>
+      <p>Simple PDF tools for everyday document tasks.</p>
+    </div>
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../disclaimer.html">Disclaimer</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">© 2026 QuickPDFTools. Built for simple PDF tasks.</div>
+</footer>
+<script defer src="../js/main.js"></script>
+</body></html>

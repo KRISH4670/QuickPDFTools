@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Reorder PDF pages online for free. Drag pages into a new order and download the reorganized PDF with QuickPDFTools.">
+<link rel="canonical" href="reorder-pages.html">
+<title>Reorder PDF Pages Online — QuickPDFTools</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.tool-wrap{max-width:1000px;margin:auto}.drop{border:2px dashed #93c5fd;background:#f8fbff;border-radius:18px;padding:42px 20px;text-align:center;cursor:pointer}.drop.drag{background:#eff6ff;border-color:#2563eb}.panel{margin-top:20px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}.topbar,.actions{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.hint{margin:14px 0;padding:11px 13px;background:#f8fafc;border-radius:8px;color:#667085;font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.page{border:2px solid #e5e7eb;border-radius:11px;padding:9px;background:#fff;cursor:grab;user-select:none}.page.dragging{opacity:.5}.page.over{border-style:dashed;border-color:#111827}.page canvas{width:100%;height:170px;object-fit:contain;background:#f8fafc;display:block}.page-title{text-align:center;font-size:12px;margin-top:8px}.move{display:flex;justify-content:center;gap:6px;margin-top:8px}.move button{padding:6px 9px;border:1px solid #d1d5db;background:#fff;border-radius:7px;cursor:pointer}.status{text-align:center;min-height:24px;margin-top:15px;color:#667085}.note{margin-top:22px;padding:18px;background:#f8fafc;border-radius:12px;color:#667085;font-size:13px;line-height:1.6}@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:430px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="../index.html" aria-label="QuickPDFTools home">
+      <span class="brand-mark">Q</span>
+      <span>Quick<span>PDF</span>Tools</span>
+    </a>
+    <button class="menu-toggle" data-menu-toggle aria-label="Open menu">☰</button>
+    <nav class="nav" data-mobile-menu>
+      <a href="../index.html#tools">All Tools</a>
+      <a href="../index.html#how-it-works">How It Works</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tool-page">
+  <section class="tool-hero">
+    <div class="container">
+      <div class="tool-breadcrumb"><a href="../index.html">Home</a> <span>›</span> <span>Reorder PDF Pages Online</span></div>
+      <div class="tool-heading">
+        <div class="eyebrow">PDF TOOL</div>
+        <h1>Reorder PDF Pages Online</h1>
+        <p>Use this simple PDF tool online. Upload your file, choose your options, and download the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-workspace">
+    <div class="container">
+      <div class="tool-shell">
+        <div class="tool-shell-header">
+          <span class="tool-shell-title">Use Reorder PDF Pages Online</span>
+          <span class="tool-shell-note">Simple • No signup</span>
+        </div>
+        <div class="tool-shell-body">
+          
+
+<main class="section"><div class="container tool-wrap">
+<div class="eyebrow">ORGANIZE PDF</div>
+<h1>Reorder PDF Pages</h1>
+<p>Change the order of pages in your PDF and download the reorganized document.</p>
+<div class="drop" id="drop"><h3>Drop a PDF here</h3><p>or click to choose a PDF file</p><button class="btn primary" type="button">Choose PDF</button><input id="input" type="file" accept="application/pdf" hidden></div>
+<div id="panel" class="panel" hidden>
+<div class="topbar"><div><strong id="name"></strong><br><small id="info"></small></div><button id="change" class="btn secondary">Change PDF</button></div>
+<div class="hint">Drag and drop the page cards to change their order. You can also use the arrow buttons.</div>
+<div id="grid" class="grid"></div>
+<div class="actions"><button id="download" class="btn primary">Save New Order & Download</button><button id="reset" class="btn secondary">Clear</button></div>
+<div id="status" class="status"></div>
+</div>
+<div class="note"><strong>Privacy:</strong> Your PDF is processed in your browser and is not uploaded to a QuickPDFTools server.</div>
+</div></main>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const input=document.getElementById('input'),drop=document.getElementById('drop'),panel=document.getElementById('panel'),grid=document.getElementById('grid'),status=document.getElementById('status');
+let source=null,order=[];
+drop.onclick=e=>{if(e.target.tagName!=='BUTTON')input.click()};drop.querySelector('button').onclick=()=>input.click();
+['dragenter','dragover'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.add('drag')}));
+['dragleave','drop'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.remove('drag')}));
+input.onchange=()=>load(input.files[0]);drop.addEventListener('drop',e=>load(e.dataTransfer.files[0]));
+async function load(file){if(!file||file.type!=='application/pdf'){status.textContent='Please select a PDF file.';return}try{status.textContent='Loading…';source=await PDFLib.PDFDocument.load(await file.arrayBuffer());order=source.getPageIndices();document.getElementById('name').textContent=file.name;document.getElementById('info').textContent=source.getPageCount()+' page'+(source.getPageCount()===1?'':'s');panel.hidden=false;render();status.textContent=''}catch(e){console.error(e);status.textContent='Could not open this PDF.'}}
+function render(){grid.innerHTML='';order.forEach((pageIndex,pos)=>{const box=document.createElement('div');box.className='page';box.draggable=true;box.dataset.pos=pos;const canvas=document.createElement('canvas');canvas.width=170;canvas.height=220;const ctx=canvas.getContext('2d');ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,170,220);ctx.fillStyle='#667085';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.fillText('Page '+(pageIndex+1),85,105);ctx.font='13px Arial';ctx.fillText('Position '+(pos+1),85,130);box.appendChild(canvas);const title=document.createElement('div');title.className='page-title';title.textContent='Original page '+(pageIndex+1);box.appendChild(title);const controls=document.createElement('div');controls.className='move';const left=document.createElement('button');left.textContent='←';left.title='Move left';const right=document.createElement('button');right.textContent='→';right.title='Move right';left.onclick=e=>{e.stopPropagation();move(pos,pos-1)};right.onclick=e=>{e.stopPropagation();move(pos,pos+1)};controls.append(left,right);box.appendChild(controls);
+box.addEventListener('dragstart',()=>{box.classList.add('dragging');box.dataset.dragPos=pos});box.addEventListener('dragend',()=>{box.classList.remove('dragging');document.querySelectorAll('.page').forEach(x=>x.classList.remove('over'))});box.addEventListener('dragover',e=>{e.preventDefault();box.classList.add('over')});box.addEventListener('dragleave',()=>box.classList.remove('over'));box.addEventListener('drop',e=>{e.preventDefault();box.classList.remove('over');const from=Number(document.querySelector('.dragging').dataset.dragPos);let to=pos;if(from<to)to--;move(from,to)});grid.appendChild(box)})}
+function move(from,to){if(from<0||to<0||from>=order.length||to>=order.length||from===to)return;const item=order.splice(from,1)[0];order.splice(to,0,item);render()}
+document.getElementById('change').onclick=reset;document.getElementById('reset').onclick=reset;
+function reset(){source=null;order=[];input.value='';panel.hidden=true;grid.innerHTML='';status.textContent=''}
+document.getElementById('download').onclick=async()=>{if(!order.length)return;const btn=document.getElementById('download');btn.disabled=true;status.textContent='Creating reordered PDF…';try{const out=await PDFLib.PDFDocument.create();const pages=await out.copyPages(source,order);pages.forEach(p=>out.addPage(p));const bytes=await out.save();const blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='reordered.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Done — reordered.pdf downloaded.'}catch(e){console.error(e);status.textContent='Could not save the new page order.'}finally{btn.disabled=false}};
+</script>
+
+          <div class="tool-privacy">Your files are processed by the tool according to its implementation. Where a tool works entirely in your browser, files do not need to be uploaded to a server.</div>
+        </div>
+      </div>
+
+      <div class="tool-help">
+        <div class="tool-help-card"><strong>1. Upload</strong><span>Select or drag your PDF/image into the tool.</span></div>
+        <div class="tool-help-card"><strong>2. Adjust</strong><span>Choose the options you need.</span></div>
+        <div class="tool-help-card"><strong>3. Download</strong><span>Save your finished file.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <a class="brand footer-brand" href="../index.html"><span class="brand-mark">Q</span><span>Quick<span>PDF</span>Tools</span></a>
+      <p>Simple PDF tools for everyday document tasks.</p>
+    </div>
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../disclaimer.html">Disclaimer</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">© 2026 QuickPDFTools. Built for simple PDF tasks.</div>
+</footer>
+<script defer src="../js/main.js"></script>
+</body></html>
