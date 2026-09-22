@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://YOUR-DOMAIN.example/</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/merge-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/split-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/compress-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/jpg-to-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/pdf-to-jpg.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/about.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/privacy.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/terms.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/disclaimer.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/rotate-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/delete-pages.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/extract-pages.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/reorder-pages.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/protect-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/watermark-pdf.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/page-numbers.html</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/tools/resize-pdf.html</loc></url>
+</urlset>

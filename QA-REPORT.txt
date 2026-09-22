@@ -1,0 +1,20 @@
+QuickPDFTools V1 — Runtime/Static Test Preparation
+===================================================
+{
+  "pages_checked": 13,
+  "all_structural_checks_pass": true,
+  "missing_local_refs": [],
+  "special_checks": {
+    "compress_range": true,
+    "compress_range_0_80": true,
+    "protect_disclaimer": true,
+    "homepage_first_tool": "tools/jpg-to-pdf.html",
+    "homepage_tool_count": 13
+  },
+  "test_assets": [
+    "test-assets/sample.pdf",
+    "test-assets/sample.png"
+  ]
+}
+
+Note: browser execution is required for true end-to-end interaction testing. This environment performed structural/static checks and created representative test assets.
