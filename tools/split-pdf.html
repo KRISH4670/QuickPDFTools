@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Split a PDF by page range directly in your browser with QuickPDFTools.">
+    <link rel="canonical" href="https://YOUR-DOMAIN.example/tools/split-pdf.html">
+<title>Split PDF Online — QuickPDFTools</title><link rel="stylesheet" href="../css/style.css"><style>.tool-wrap{max-width:850px;margin:auto}.drop{border:2px dashed #93c5fd;background:#f8fbff;border-radius:18px;padding:42px 20px;text-align:center;cursor:pointer}.drop.drag{background:#eff6ff;border-color:#2563eb}.panel{margin-top:20px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}.file-info{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.range{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:18px}.field label{display:block;font-size:12px;font-weight:700;color:#667085;margin-bottom:6px}.field input{width:120px;padding:11px;border:1px solid #d1d5db;border-radius:8px;font-size:15px}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}.status{min-height:24px;text-align:center;margin-top:15px;color:#667085}.note{margin-top:30px;padding:20px;background:#f8fafc;border-radius:14px;color:#667085;font-size:13px;line-height:1.6}</style></head><body>
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="../index.html" aria-label="QuickPDFTools home">
+      <span class="brand-mark">Q</span>
+      <span>Quick<span>PDF</span>Tools</span>
+    </a>
+    <button class="menu-toggle" data-menu-toggle aria-label="Open menu">☰</button>
+    <nav class="nav" data-mobile-menu>
+      <a href="../index.html#tools">All Tools</a>
+      <a href="../index.html#how-it-works">How It Works</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tool-page">
+  <section class="tool-hero">
+    <div class="container">
+      <div class="tool-breadcrumb"><a href="../index.html">Home</a> <span>›</span> <span>Split PDF Online</span></div>
+      <div class="tool-heading">
+        <div class="eyebrow">PDF TOOL</div>
+        <h1>Split PDF Online</h1>
+        <p>Use this simple PDF tool online. Upload your file, choose your options, and download the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-workspace">
+    <div class="container">
+      <div class="tool-shell">
+        <div class="tool-shell-header">
+          <span class="tool-shell-title">Use Split PDF Online</span>
+          <span class="tool-shell-note">Simple • No signup</span>
+        </div>
+        <div class="tool-shell-body">
+          <main class="section"><div class="container tool-wrap"><div class="eyebrow">PDF TOOL</div><h1>Split PDF</h1><p>Select a page range and create a new PDF from those pages.</p><div class="drop" id="drop"><h3>Drop a PDF here</h3><p>or click to choose a PDF file</p><button class="btn primary" type="button">Choose PDF</button><input id="file" type="file" accept="application/pdf" hidden></div><div id="panel" class="panel" hidden><div class="file-info"><div><strong id="filename"></strong><br><small id="pages"></small></div><button id="remove" class="btn secondary">Change PDF</button></div><div class="range"><div class="field"><label>FROM PAGE</label><input id="from" type="number" min="1" value="1"></div><div class="field"><label>TO PAGE</label><input id="to" type="number" min="1" value="1"></div></div><div class="actions"><button id="split" class="btn primary">Split & Download</button></div></div><div id="status" class="status"></div><div class="note"><strong>Privacy:</strong> The PDF is processed in your browser. This tool does not upload your document to a QuickPDFTools server.</div></div></main><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script><script>const input=document.getElementById('file'),drop=document.getElementById('drop'),panel=document.getElementById('panel'),filename=document.getElementById('filename'),pagesEl=document.getElementById('pages'),from=document.getElementById('from'),to=document.getElementById('to'),split=document.getElementById('split'),status=document.getElementById('status');let file=null,pageCount=0;drop.onclick=e=>{if(e.target.tagName!=='BUTTON')input.click()};drop.querySelector('button').onclick=()=>input.click();input.onchange=()=>loadFile(input.files[0]);['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));async function loadFile(f){if(!f||f.type!=='application/pdf'){status.textContent='Please select a PDF file.';return}try{file=f;const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());pageCount=doc.getPageCount();filename.textContent=f.name;pagesEl.textContent=pageCount+' page'+(pageCount===1?'':'s');from.max=pageCount;to.max=pageCount;from.value=1;to.value=pageCount;panel.hidden=false;status.textContent=''}catch(e){status.textContent='This PDF could not be opened.'}}document.getElementById('remove').onclick=()=>{file=null;input.value='';panel.hidden=true;status.textContent=''};split.onclick=async()=>{if(!file)return;const a=Number(from.value),b=Number(to.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<1||b>pageCount||a>b){status.textContent='Enter a valid page range.';return}split.disabled=true;status.textContent='Creating PDF…';try{const src=await PDFLib.PDFDocument.load(await file.arrayBuffer()),out=await PDFLib.PDFDocument.create();const indexes=Array.from({length:b-a+1},(_,i)=>a-1+i);const copied=await out.copyPages(src,indexes);copied.forEach(p=>out.addPage(p));const bytes=await out.save();const blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='split-pages-'+a+'-'+b+'.pdf';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Done — your split PDF has been downloaded.'}catch(e){console.error(e);status.textContent='Could not create the PDF.'}finally{split.disabled=false}};</script>
+          <div class="tool-privacy">Your files are processed by the tool according to its implementation. Where a tool works entirely in your browser, files do not need to be uploaded to a server.</div>
+        </div>
+      </div>
+
+      <div class="tool-help">
+        <div class="tool-help-card"><strong>1. Upload</strong><span>Select or drag your PDF/image into the tool.</span></div>
+        <div class="tool-help-card"><strong>2. Adjust</strong><span>Choose the options you need.</span></div>
+        <div class="tool-help-card"><strong>3. Download</strong><span>Save your finished file.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <a class="brand footer-brand" href="../index.html"><span class="brand-mark">Q</span><span>Quick<span>PDF</span>Tools</span></a>
+      <p>Simple PDF tools for everyday document tasks.</p>
+    </div>
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../disclaimer.html">Disclaimer</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">© 2026 QuickPDFTools. Built for simple PDF tasks.</div>
+</footer>
+<script defer src="../js/main.js"></script>
+</body></html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Extract selected pages from a PDF online for free. Create a new PDF from selected pages with QuickPDFTools.">
+<link rel="canonical" href="extract-pages.html">
+<title>Extract PDF Pages Online — QuickPDFTools</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.tool-wrap{max-width:950px;margin:auto}.drop{border:2px dashed #93c5fd;background:#f8fbff;border-radius:18px;padding:42px 20px;text-align:center;cursor:pointer}.drop.drag{background:#eff6ff;border-color:#2563eb}.panel{margin-top:20px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}.topbar,.actions,.selectbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.selectbar{margin-top:18px;justify-content:flex-start}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.page{border:2px solid #e5e7eb;border-radius:11px;padding:9px;background:#fff;cursor:pointer}.page.selected{border-color:#111827;background:#f8fafc}.page canvas{width:100%;height:170px;object-fit:contain;background:#f8fafc;display:block}.page-title{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px}.status{text-align:center;min-height:24px;margin-top:15px;color:#667085}.note{margin-top:22px;padding:18px;background:#f8fafc;border-radius:12px;color:#667085;font-size:13px;line-height:1.6}@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:430px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="../index.html" aria-label="QuickPDFTools home">
+      <span class="brand-mark">Q</span>
+      <span>Quick<span>PDF</span>Tools</span>
+    </a>
+    <button class="menu-toggle" data-menu-toggle aria-label="Open menu">☰</button>
+    <nav class="nav" data-mobile-menu>
+      <a href="../index.html#tools">All Tools</a>
+      <a href="../index.html#how-it-works">How It Works</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tool-page">
+  <section class="tool-hero">
+    <div class="container">
+      <div class="tool-breadcrumb"><a href="../index.html">Home</a> <span>›</span> <span>Extract PDF Pages Online</span></div>
+      <div class="tool-heading">
+        <div class="eyebrow">PDF TOOL</div>
+        <h1>Extract PDF Pages Online</h1>
+        <p>Use this simple PDF tool online. Upload your file, choose your options, and download the result.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-workspace">
+    <div class="container">
+      <div class="tool-shell">
+        <div class="tool-shell-header">
+          <span class="tool-shell-title">Use Extract PDF Pages Online</span>
+          <span class="tool-shell-note">Simple • No signup</span>
+        </div>
+        <div class="tool-shell-body">
+          
+
+<main class="section"><div class="container tool-wrap">
+<div class="eyebrow">ORGANIZE PDF</div>
+<h1>Extract PDF Pages</h1>
+<p>Select specific pages from a PDF and create a new PDF containing only those pages.</p>
+<div class="drop" id="drop"><h3>Drop a PDF here</h3><p>or click to choose a PDF file</p><button class="btn primary" type="button">Choose PDF</button><input id="input" type="file" accept="application/pdf" hidden></div>
+<div id="panel" class="panel" hidden>
+<div class="topbar"><div><strong id="name"></strong><br><small id="info"></small></div><button id="change" class="btn secondary">Change PDF</button></div>
+<div class="selectbar"><strong>Pages to extract: <span id="count">0</span></strong><button id="all" class="btn secondary">Select all</button><button id="none" class="btn secondary">Clear selection</button></div>
+<div id="grid" class="grid"></div>
+<div class="actions"><button id="extract" class="btn primary">Extract Selected Pages & Download</button><button id="reset" class="btn secondary">Clear</button></div>
+<div id="status" class="status"></div>
+</div>
+<div class="note"><strong>Privacy:</strong> Your PDF is processed in your browser and is not uploaded to a QuickPDFTools server.</div>
+</div></main>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const input=document.getElementById('input'),drop=document.getElementById('drop'),panel=document.getElementById('panel'),grid=document.getElementById('grid'),status=document.getElementById('status'),countEl=document.getElementById('count');
+let source=null,selected=[];
+drop.onclick=e=>{if(e.target.tagName!=='BUTTON')input.click()};drop.querySelector('button').onclick=()=>input.click();
+['dragenter','dragover'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.add('drag')}));
+['dragleave','drop'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.remove('drag')}));
+input.onchange=()=>load(input.files[0]);drop.addEventListener('drop',e=>load(e.dataTransfer.files[0]));
+async function load(file){if(!file||file.type!=='application/pdf'){status.textContent='Please select a PDF file.';return}try{status.textContent='Loading…';source=await PDFLib.PDFDocument.load(await file.arrayBuffer());selected=Array(source.getPageCount()).fill(false);document.getElementById('name').textContent=file.name;document.getElementById('info').textContent=source.getPageCount()+' page'+(source.getPageCount()===1?'':'s');panel.hidden=false;renderPages();status.textContent=''}catch(e){console.error(e);status.textContent='Could not open this PDF.'}}
+function renderPages(){grid.innerHTML='';for(let i=0;i<source.getPageCount();i++){const box=document.createElement('div');box.className='page'+(selected[i]?' selected':'');const canvas=document.createElement('canvas');canvas.width=170;canvas.height=220;const ctx=canvas.getContext('2d');ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,170,220);ctx.fillStyle='#667085';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.fillText('Page '+(i+1),85,110);box.appendChild(canvas);const row=document.createElement('div');row.className='page-title';row.innerHTML='<span>Page '+(i+1)+'</span><input type="checkbox">';const cb=row.querySelector('input');cb.checked=selected[i];cb.onchange=()=>toggle(i,box,cb.checked);box.onclick=e=>{if(e.target!==cb){cb.checked=!cb.checked;toggle(i,box,cb.checked)}};box.appendChild(row);grid.appendChild(box)}updateCount()}
+function toggle(i,box,value){selected[i]=value;box.classList.toggle('selected',value);updateCount()}
+function updateCount(){countEl.textContent=selected.filter(Boolean).length}
+document.getElementById('all').onclick=()=>{selected=selected.map(()=>true);renderPages()};
+document.getElementById('none').onclick=()=>{selected=selected.map(()=>false);renderPages()};
+document.getElementById('change').onclick=reset;document.getElementById('reset').onclick=reset;
+function reset(){source=null;selected=[];input.value='';panel.hidden=true;grid.innerHTML='';status.textContent='';updateCount()}
+document.getElementById('extract').onclick=async()=>{const indices=selected.map((v,i)=>v?i:null).filter(v=>v!==null);if(!indices.length){status.textContent='Select at least one page to extract.';return}const btn=document.getElementById('extract');btn.disabled=true;status.textContent='Creating extracted PDF…';try{const out=await PDFLib.PDFDocument.create();const pages=await out.copyPages(source,indices);pages.forEach(p=>out.addPage(p));const bytes=await out.save();const blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='extracted-pages.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Done — extracted-pages.pdf downloaded.'}catch(e){console.error(e);status.textContent='Could not extract the selected pages.'}finally{btn.disabled=false}};
+</script>
+
+          <div class="tool-privacy">Your files are processed by the tool according to its implementation. Where a tool works entirely in your browser, files do not need to be uploaded to a server.</div>
+        </div>
+      </div>
+
+      <div class="tool-help">
+        <div class="tool-help-card"><strong>1. Upload</strong><span>Select or drag your PDF/image into the tool.</span></div>
+        <div class="tool-help-card"><strong>2. Adjust</strong><span>Choose the options you need.</span></div>
+        <div class="tool-help-card"><strong>3. Download</strong><span>Save your finished file.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <a class="brand footer-brand" href="../index.html"><span class="brand-mark">Q</span><span>Quick<span>PDF</span>Tools</span></a>
+      <p>Simple PDF tools for everyday document tasks.</p>
+    </div>
+    <div class="footer-links">
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+      <a href="../disclaimer.html">Disclaimer</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">© 2026 QuickPDFTools. Built for simple PDF tasks.</div>
+</footer>
+<script defer src="../js/main.js"></script>
+</body></html>
