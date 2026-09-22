@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Replace YOUR-DOMAIN.example with your real domain before deployment.
-Sitemap: https://YOUR-DOMAIN.example/sitemap.xml
+Sitemap: https://krish4670.github.io/QuickPDFTools/sitemap.xml
