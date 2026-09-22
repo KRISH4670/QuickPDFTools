@@ -1,21 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://krish4670.github.io/</loc></url>
-  <url><loc>https://krish4670.github.io/tools/merge-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/split-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/compress-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/jpg-to-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/pdf-to-jpg.html</loc></url>
-  <url><loc>https://krish4670.github.io/about.html</loc></url>
-  <url><loc>https://krish4670.github.io/privacy.html</loc></url>
-  <url><loc>https://krish4670.github.io/terms.html</loc></url>
-  <url><loc>https://krish4670.github.io/disclaimer.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/rotate-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/delete-pages.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/extract-pages.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/reorder-pages.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/protect-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/watermark-pdf.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/page-numbers.html</loc></url>
-  <url><loc>https://krish4670.github.io/tools/resize-pdf.html</loc></url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/jpg-to-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/merge-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/split-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/compress-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/pdf-to-jpg.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/rotate-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/delete-pages.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/extract-pages.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/reorder-pages.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/protect-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/watermark-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/page-numbers.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/tools/resize-pdf.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/about.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/privacy.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/terms.html</loc>
+  </url>
+
+  <url>
+    <loc>https://krish4670.github.io/QuickPDFTools/disclaimer.html</loc>
+  </url>
+
 </urlset>
